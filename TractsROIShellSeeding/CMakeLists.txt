@@ -1,0 +1,28 @@
+find_package(Slicer COMPONENTS ConfigurePrerequisites)
+
+cmake_minimum_required(VERSION 2.8.9)
+
+project(TractsROIShellSeeding)
+
+#-----------------------------------------------------------------------------
+set(MODULE_NAME TractsROIShellSeeding)
+
+
+#-----------------------------------------------------------------------------
+find_package(Slicer REQUIRED)
+include(${Slicer_USE_FILE})
+
+#-----------------------------------------------------------------------------
+SEMMacroBuildCLI(
+  NAME ${MODULE_NAME}
+  LOGO_HEADER ${Slicer_SOURCE_DIR}/Resources/ITKLogo.h
+  TARGET_LIBRARIES vtkTeem SlicerBaseLogic
+  INCLUDE_DIRECTORIES
+    ${vtkITK_INCLUDE_DIRS}
+    ${vtkTeem_INCLUDE_DIRS}	
+  )
+
+#-----------------------------------------------------------------------------
+if(BUILD_TESTING)
+  add_subdirectory(Testing)
+endif()
