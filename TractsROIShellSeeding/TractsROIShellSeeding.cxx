@@ -19,6 +19,7 @@
 #include <vtkSmartPointer.h>
 #include <vtksys/SystemTools.hxx>
 #include <vtkXMLPolyDataWriter.h>
+#include <vtkImageDilateErode3D.h>
 
 // STD includes
 #include <string>
@@ -68,11 +69,16 @@ int main( int argc, char * argv[] )
         }
 
       // cast roi to short data type
-      imageCast->SetOutputScalarTypeToShort();
-      imageCast->SetInput(reader2->GetOutput() );
-      imageCast->Update();
+      if (KernelSize == 0.0)
+        {
+        imageCast->SetOutputScalarTypeToShort();
+        imageCast->SetInput(reader2->GetOutput() );
+        imageCast->Update();
+        ROI = imageCast->GetOutput();
+        } else {
+        ROI = reader2->GetOutput();
+        }
 
-      ROI = imageCast->GetOutput();
 
       // Set up the matrix that will take points in ROI
       // to RAS space.  Code assumes this is world space
@@ -193,9 +199,26 @@ int main( int argc, char * argv[] )
     trans2->Inverse();
     seed->SetROIToWorld(trans2.GetPointer());
 
+    // ROI dilation/erosion before it is used as seed.
+    if (KernelSize > 0.0)
+      {
+      vtkNew<vtkImageDilateErode3D> dilateErode;
+      dilateErode->SetInput(ROI);
+      dilateErode->SetDilateValue(1); // TODO: extend it to be set
+      dilateErode->SetErodeValue(0);
+      dilateErode->SetKernelSize(KernelSize, KernelSize, KernelSize);
+      dilateErode->ReleaseDataFlagOff(); 
+      dilateErode->GetOutput();
+
+      // cast roi to short data type again
+      imageCast->SetOutputScalarTypeToShort();
+      imageCast->SetInput(dilateErode->GetOutput() );
+      imageCast->Update();
+      ROI = imageCast->GetOutput();
+      }
+
 
     // PENDING: Do merging with input ROI
-
     seed->SetInputROI(ROI);
     seed->SetInputROIValue(ROIlabel);
     seed->UseStartingThresholdOn();

@@ -8,9 +8,18 @@
   <license>slicer3</license>
   <contributor>Sidong, Siqi (USYD)</contributor>
   <acknowledgements><![CDATA[Laboratory of Mathematics in Imaging. This work is part of the National Alliance for Medical Image Computing (NAMIC), funded by the National Institutes of Health through the NIH Roadmap for Medical Research, Grant U54 EB005149.]]></acknowledgements>
+
   <parameters>
     <label>IO</label>
     <description><![CDATA[Input/output parameters]]></description>
+    <double>
+      <name>KernelSize</name>
+      <longflag>kernelsize</longflag>
+      <flag>k</flag>
+      <label>Kernel Size</label>
+      <description><![CDATA[A double value (in units of mm) passed to the algorithm]]></description>
+      <default>5.0</default>
+    </double>
     <image type="tensor">
       <name>InputVolume</name>
       <label>Input DTI Volume</label>
