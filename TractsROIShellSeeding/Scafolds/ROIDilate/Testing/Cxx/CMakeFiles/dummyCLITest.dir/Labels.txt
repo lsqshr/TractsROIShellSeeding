@@ -1,0 +1,4 @@
+# Target labels
+ dummyCLI
+# Source files and their labels
+/home/siqi/dummyCLI/Testing/Cxx/dummyCLITest.cxx
